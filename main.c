@@ -86,7 +86,7 @@ static int* hexToRGB(char* hex) {
 };
 
 int main (int argc, char* argv[]) {
-    printf("---------------------\nColor Converter v1.0\n---------------------\n\n");
+    printf("\n---------------------\nColor Converter v1.0\n---------------------\n\n");
     printf("Please follow directions stated in the prompts.\nFailure to do so will result in inaccurate results.\n\n");
 
     if (argc <= 1) {
@@ -228,8 +228,99 @@ int main (int argc, char* argv[]) {
         // todo print help message
     }
 
-    if (!strcmp(argv[1], "-r")) {
-        // todo handle starting format as rgb
+    if (!strcmp(argv[1], "-r")) { // rgb to unknown
+        int r = 0, g = 0, b = 0;
+        int endingFormat;
+
+        printf("Enter the format you want to convert your color to:\n  1. Hex\n  2. Normalized RGB\n\n> ");
+        scanf("%i", &endingFormat);
+
+        // check for 3 color values entered after the command
+        if (argc == 5) {
+            int mult = 1;
+            int len = 0;
+
+            // determine the rgb values
+            // ---------- red value ----------
+            for (int i = 0; argv[2][i] != '\0'; ++i) { ++len; } // find the length of the string
+
+            // ensure valid length
+            if (len > 3) {
+                printf("[ERROR] RGB format not entered. Numbers must be between 0 and 255.\n");
+                return 1;
+            }
+
+            for (int i = len - 1; i >= 0; --i) {
+                r += mult * (int) (argv[2][i] - '0');
+                mult *= 10;
+            }
+
+            // ---------- green value ----------
+
+            mult = 1;
+            len = 0;
+
+            for (int i = 0; argv[3][i] != '\0'; ++i) { ++len; }
+
+            // ensure valid length
+            if (len > 3) {
+                printf("[ERROR] RGB format not entered. Numbers must be between 0 and 255.\n");
+                return 1;
+            }            
+
+            for (int i = len - 1; i >= 0; --i) {
+                g += mult * (int) (argv[3][i] - '0');
+                mult *= 10;
+            }
+
+            // ---------- blue value ----------
+
+            mult = 1;
+            len = 0;
+
+            for (int i = 0; argv[4][i] != '\0'; ++i) { ++len; } // find the length of the string
+
+            // ensure valid length
+            if (len > 3) {
+                printf("[ERROR] RGB format not entered. Numbers must be between 0 and 255.\n");
+                return 1;
+            }
+
+            for (int i = len - 1; i >= 0; --i) {
+                b += mult * (int) (argv[4][i] - '0');
+                mult *= 10;
+            }
+
+        } else { // 3 color values were not passed through the cmd line
+            printf("\nEnter the rgb value as 3 space separated numbers: ");
+            scanf("%i", &r);
+            scanf("%i", &g);
+            scanf("%i", &b);
+        }
+
+        // ensure the RGB entered is valid
+        if (r < 0 || r > 255 || b < 0 || b > 255 || g < 0 || g > 255) {
+            printf("%i, %i, %i\n", r, g, b);
+            printf("\n[ERROR] RGB format not entered. Numbers must be between 0 and 255.\n");
+            return 1;
+        }
+
+        // convert to the other format
+        switch (endingFormat) {
+            case 1: {
+                char* hex = rgbToHex(r, g, b);
+                printf("\nHex for your color 0x%s", hex);
+                free(hex);
+                break;
+            }
+
+            case 2: {
+                printf("\nNormalized RGB for your color: %f, %f, %f", (r/255.0f), (g/255.0f), (b/255.0f));
+                break;
+            }
+        }
+
+        return 0;
     }
 
     if (!strcmp(argv[1], "-h")) {
