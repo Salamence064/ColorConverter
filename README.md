@@ -15,7 +15,7 @@ ___
 
 ## Planned Additions
  * Optional parameters while running the compiled binary.
- * Support for additional color formats
+ * Support for additional color formats.
 
 ___
 
